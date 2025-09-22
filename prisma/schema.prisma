@@ -1,0 +1,68 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model users {
+  id         Int      @id @default(autoincrement())
+  full_name  String
+  email      String   @unique
+  phone      String   @unique
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
+
+  // Relations
+  events     events[]
+}
+
+
+model event_types {
+  id          Int      @id @default(autoincrement()) // primary key
+  name        String
+  description String?  // nullable field
+  created_at  DateTime @default(now())
+  updated_at  DateTime @updatedAt
+
+  events     events[]
+}
+
+model events {
+  id            Int       @id @default(autoincrement())
+  user_id       Int
+  event_type_id Int
+  title         String
+  event_date    DateTime
+  event_time    String
+  description   String
+  event_location String
+  map_link      String    @unique
+  valid_status  Boolean   @default(true)
+  payment_status Boolean  @default(false)
+  created_at    DateTime  @default(now())
+  updated_at    DateTime  @updatedAt
+
+  // Relations
+  user          users      @relation(fields: [user_id], references: [id])
+  event_type     event_types @relation(fields: [event_type_id], references: [id])
+}
+
+
+model faqs {
+  id         Int      @id @default(autoincrement())
+  question   String
+  answer     String   @db.Text
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
+}
+
