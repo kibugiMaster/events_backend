@@ -1,11 +1,17 @@
 import express from "express";
 import mainRoutes from "./src/routes/main_routes.js";
+import cors from "cors";
 
 const app = express();
 const PORT = 3001;
 
 // Middleware to parse JSON
 app.use(express.json());
+
+app.use(cors()); // allow all origins
+// OR restrict
+// app.use(cors({ origin: "http://localhost:8080" }));
+
 
 // Routes
 app.get("/", (req, res) => {
@@ -25,6 +31,7 @@ BigInt.prototype.toJSON = function () {
 };
 
 app.listen(PORT, () => {
-    console.log(`🚀 Server running at http://localhost:${PORT}`);
+    // console.log(`🚀 Server running at http://localhost:${PORT}`);
+    console.log(`🚀 Server running at http://192.168.100.161:${PORT}`);
 });
 

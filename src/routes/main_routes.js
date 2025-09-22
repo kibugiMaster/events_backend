@@ -12,7 +12,7 @@ router.get('/', (req, res) => {
 )
 
 router.use('/auth', authRoutes)
-router.use('/faq', faqRoutes)
+router.use('/faqs', faqRoutes)
 
 
 export default router;

@@ -1,7 +1,8 @@
 import { Router } from 'express';
-import { checkUser, issueTokensForUser, login, register } from '../controllers/auth_controller.js';
+import { checkUser, getUserById, issueTokensForUser, login, register } from '../controllers/auth_controller.js';
 import { validateEmail } from '../utils/helper.js';
 import { refreshExpiresMs } from '../utils/jwt.js';
+import { requireAuth } from '../middleware/auth_middleware.js';
 
 const router = Router();
 
@@ -52,5 +53,14 @@ router.post('/login', async (req, res) => {
     });
     return res.json({ success: true, message: "User created successfully.", data: user.data, token: tokens.accessToken });
 });
+
+router.get('/profile', requireAuth, async (req, res) => {
+    const user_id = req.user.userId;
+    let user = await getUserById(user_id);
+    if (user.success !== true) {
+        return res.status(user.code).json(user);
+    }
+    return res.json(user);
+})
 
 export default router;

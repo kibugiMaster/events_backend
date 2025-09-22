@@ -4,7 +4,6 @@ import jwt from "jsonwebtoken";
 import prisma from "../config/prisma_config.js";
 import { hashValue, validateEmail } from "../utils/helper.js";
 import { signAccessToken, signRefreshToken } from "../utils/jwt.js";
-const JWT_SECRET = process.env.JWT_SECRET || 'dev-secret-change-me';
 
 export const register = async (name, phone, email, password) => {
     try {
@@ -45,6 +44,19 @@ export const login = async (user_name, password) => {
     } catch (error) {
         console.error(error);
         return { code: 500, success: false, message: "Internal server error", data: error.message };
+    }
+}
+
+export const getUserById = async (id) => {
+    try {
+        let user = await prisma.users.findUnique({ where: { id }, select: { full_name: true, email: true, phone: true } });
+        if (!user) {
+            return { code: 401, success: false, "message": "User does not exist" };
+        }
+        return { code: 200, success: true, data: user }
+    } catch (e) {
+        console.log(e);
+        return { code: 500, success: false, message: "Internal Server Error", data: e.message };
     }
 }
 

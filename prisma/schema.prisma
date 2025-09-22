@@ -44,6 +44,7 @@ model event_types {
   id          Int      @id @default(autoincrement()) // primary key
   name        String
   description String?  // nullable field
+  logo        String?
   created_at  DateTime @default(now())
   updated_at  DateTime @updatedAt
 
