@@ -6,7 +6,6 @@
 
 generator client {
   provider = "prisma-client-js"
-  output   = "../src/generated/prisma"
 }
 
 datasource db {
@@ -19,13 +18,27 @@ model users {
   full_name  String
   email      String   @unique
   phone      String   @unique
+  password   String
   created_at DateTime @default(now())
   updated_at DateTime @updatedAt
 
   // Relations
   events     events[]
+  refresh_tokens       refresh_token[]
 }
 
+model refresh_token {
+  id          Int      @id @default(autoincrement())
+  user_id      Int
+  token  String   @db.Text     
+  expires_at  DateTime
+  created_at  DateTime @default(now())
+  revoked_at  DateTime?
+
+  user        users    @relation(fields: [user_id], references: [id], onDelete: Cascade)
+
+  @@index([user_id])
+}
 
 model event_types {
   id          Int      @id @default(autoincrement()) // primary key
