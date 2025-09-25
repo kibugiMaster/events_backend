@@ -72,6 +72,7 @@ model events {
   user          users      @relation(fields: [user_id], references: [id])
   event_type     event_types @relation(fields: [event_type_id], references: [id])
   event_guests  event_guests[]
+  event_gallery  event_gallery[]
 }
 
 model event_guests {
@@ -89,6 +90,22 @@ model event_guests {
   events       events     @relation(fields: [event_id], references: [id])
   card_type    card_types  @relation(fields: [card_type_id], references: [id])
 }
+
+model event_gallery {
+  id          Int      @id @default(autoincrement())
+  event_id    Int
+  media_url   String
+  media_type  String
+  uploaded_by String
+  caption     String?
+  is_private  Boolean  @default(true)
+  created_at  DateTime @default(now())
+  updated_at  DateTime @updatedAt
+
+  // relation to events
+  event   events @relation(fields: [event_id], references: [id])
+}
+
 
 model card_types {
   id            Int          @id @default(autoincrement())
