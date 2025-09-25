@@ -44,6 +44,36 @@ export const deleteEventType = async (id) => {
     }
 }
 
+export const getEventTypeById = async (id) => {
+    try {
+        const eventType = await prisma.event_types.findUnique({ where: { id } });
+        return { success: true, data: eventType };
+    } catch (err) {
+        console.log(`Error in getting EventType with ID ${id}`, err);
+        return { success: false, message: "Internal Server Error", data: err.message };
+    }
+}
+
+export const getEventCardTypes = async (id) => {
+    try {
+        const card = await prisma.card_types.findMany({ select: { id: true, name: true }, where: { event_type_id: id } });
+        return { success: true, data: card };
+    } catch (err) {
+        console.log("Error in getting all Event Cards Types", err);
+        return { success: false, message: "Internal Server Error", data: err.message };
+    }
+}
+
+export const createEventCardTypes = async (data) => {
+    try {
+        const card = await prisma.card_types.create({ data: data });
+        return { success: true, data: card };
+    } catch (err) {
+        console.log("Error in getting all Event Cards Types", err);
+        return { success: false, message: "Internal Server Error", data: err.message };
+    }
+}
+
 export const checkEventTypeExists = async (name) => {
     try {
         const eventType = await prisma.event_types.findFirst({ where: { name } });
@@ -54,5 +84,17 @@ export const checkEventTypeExists = async (name) => {
     } catch (err) {
         console.log(`Error in checking EventType with Name ${name} exists`, err);
         return false;
+    }
+}
+
+export const checkCardTypeExists = async (name, eventId) => {
+    try {
+        const cardType = await prisma.card_types.findFirst({ where: { AND: [{ name }, { event_type_id: eventId }] } });
+        if (cardType) {
+            return true;
+        };
+        return false;
+    } catch (err) {
+        console.log(`Error in checking Card Type with Name ${name} and Event Id ${eventId} exists`, err);
     }
 }

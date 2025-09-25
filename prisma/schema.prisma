@@ -49,6 +49,7 @@ model event_types {
   updated_at  DateTime @updatedAt
 
   events     events[]
+  card_types  card_types[]
 }
 
 model events {
@@ -60,15 +61,46 @@ model events {
   event_time    String
   description   String
   event_location String
-  map_link      String    @unique
+  map_link      String    
   valid_status  Boolean   @default(true)
   payment_status Boolean  @default(false)
+  access_code     String?  @unique 
   created_at    DateTime  @default(now())
   updated_at    DateTime  @updatedAt
 
   // Relations
   user          users      @relation(fields: [user_id], references: [id])
   event_type     event_types @relation(fields: [event_type_id], references: [id])
+  event_guests  event_guests[]
+}
+
+model event_guests {
+  id           Int        @id @default(autoincrement())
+  full_name    String
+  phone        String
+  email        String?
+  card_type_id Int
+  event_id     Int
+  access_code  String
+  created_at   DateTime   @default(now())
+  updated_at   DateTime   @updatedAt
+
+  // Relations
+  events       events     @relation(fields: [event_id], references: [id])
+  card_type    card_types  @relation(fields: [card_type_id], references: [id])
+}
+
+model card_types {
+  id            Int          @id @default(autoincrement())
+  event_type_id Int
+  name          String
+  description   String?      
+  created_at    DateTime     @default(now())
+  update_at     DateTime     @updatedAt
+
+  // Relations
+  event_type    event_types  @relation(fields: [event_type_id], references: [id])
+  event_guests  event_guests[]
 }
 
 
