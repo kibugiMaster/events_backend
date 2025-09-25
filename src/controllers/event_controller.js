@@ -3,14 +3,29 @@ import prisma from "../config/prisma_config.js";
 
 export const getAllEvents = async (user_id) => {
     try {
-        const events = await prisma.events.findMany({ where: { user_id: user_id }, include: { event_guests: true } });
+        const events = await prisma.events.findMany({
+            where: { user_id: user_id }, include: {
+                _count: {
+                    select: {
+                        event_guests: true,
+                        event_gallery: true,
+                    },
+                },
+            },
+        });
+        const formatted = events.map(({ _count, ...rest }) => ({
+            ...rest,
+            total_user: _count.event_guests,
+            total_media: _count.event_gallery,
+        }));
+
         return {
             success: true,
-            data: events
+            data: formatted
         };
     } catch (err) {
         console.log("Error in getting all events", err);
-        res.status(500).send({ message: "Internal Server Error" });
+        return { success: false, message: "Internal Server Error" };
     }
 }
 

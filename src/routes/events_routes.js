@@ -8,6 +8,9 @@ const router = Router();
 router.get("/", requireAuth, async (req, res) => {
     const user_id = req.user.userId;
     let events = await getAllEvents(user_id);
+    if (events.success !== true) {
+        return res.status(401).json({ success: false, message: "No event found!" })
+    }
     return res.status(200).json({ succuss: true, message: "Loaded successfully!", data: events.data });
 });
 
