@@ -3,6 +3,7 @@ import authRoutes from './auth_routes.js';
 import faqRoutes from './faq_routes.js';
 import eventTypesRoutes from './event_types_routes.js';
 import eventsRoutes from './events_routes.js';
+import guestRoutes from './guest_routes.js';
 
 const router = new Router();
 
@@ -17,6 +18,7 @@ router.use('/auth', authRoutes)
 router.use('/faqs', faqRoutes)
 router.use('/event-types', eventTypesRoutes)
 router.use('/events', eventsRoutes)
+router.use('/guests', guestRoutes)
 
 
 export default router;

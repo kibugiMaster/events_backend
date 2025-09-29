@@ -58,7 +58,7 @@ router.get('/profile', requireAuth, async (req, res) => {
     const user_id = req.user.userId;
     let user = await getUserById(user_id);
     if (user.success !== true) {
-        return res.status(user.code).json(user);
+        return res.status(user.code).json(user).slice();
     }
     return res.json(user);
 })
