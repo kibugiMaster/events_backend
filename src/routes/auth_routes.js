@@ -63,4 +63,8 @@ router.get('/profile', requireAuth, async (req, res) => {
     return res.json(user);
 })
 
+router.get('/check', requireAuth, async (req, res) => {
+    res.json({ status: 0, message: 'Authenticated' })
+});
+
 export default router;

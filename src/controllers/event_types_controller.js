@@ -56,7 +56,7 @@ export const getEventTypeById = async (id) => {
 
 export const getEventCardTypes = async (id) => {
     try {
-        const card = await prisma.card_types.findMany({ select: { id: true, name: true }, where: { event_type_id: id } });
+        const card = await prisma.card_types.findMany({ select: { id: true, name: true, value: true  }, where: { event_type_id: id } });
         return { success: true, data: card };
     } catch (err) {
         console.log("Error in getting all Event Cards Types", err);

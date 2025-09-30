@@ -82,7 +82,9 @@ model event_guests {
   email        String?
   card_type_id Int
   event_id     Int
-  access_code  String
+  access_code  String     @unique
+  checkin_count Int    @default(0)
+  is_checked    Boolean   @default(false)
   created_at   DateTime   @default(now())
   updated_at   DateTime   @updatedAt
 
@@ -111,6 +113,7 @@ model card_types {
   id            Int          @id @default(autoincrement())
   event_type_id Int
   name          String
+  value         Int?
   description   String?      
   created_at    DateTime     @default(now())
   update_at     DateTime     @updatedAt

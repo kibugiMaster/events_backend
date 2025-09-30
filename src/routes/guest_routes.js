@@ -1,6 +1,6 @@
 import { Router } from "express";
 import { requireAuth } from "../middleware/auth_middleware.js";
-import { addNewGuest, checkIfGuestExists, getAllGuests } from "../controllers/guest_controller.js";
+import { addNewGuest, checkIfGuestExists, checkInGuest, getAllGuests } from "../controllers/guest_controller.js";
 import { generateRandomCode, removeEmptyFields } from "../utils/helper.js";
 
 const router = new Router();
@@ -42,5 +42,21 @@ router.post("/", requireAuth, async (req, res) => {
     }
     return res.json({ success: true, message: "Created successfully!", data: guest.data });
 })
+
+router.post("/check-in", requireAuth, async (req, res) => {
+    const { access_code } = req.body || {};
+    if (!access_code) {
+        return res.status(422).json({
+            success: false,
+            message: "Please provide an access code"
+        })
+    }
+    let check = await checkInGuest(access_code);
+    if (check.success !== true) {
+        return res.status(401).json(check);
+    }
+    return res.json({ success: true, message: "Checked in successfully!", data: check.data });
+}
+)
 
 export default router;

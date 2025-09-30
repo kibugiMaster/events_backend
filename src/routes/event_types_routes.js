@@ -48,9 +48,9 @@ router.get('/card/:id', async (req, res) => {
 })
 
 router.post('/card', requireAuth, async (req, res) => {
-    let { event_type_id, name, description } = req.body || {};
-    if (!name || !event_type_id) {
-        return res.status(401).json({ success: false, message: 'Event Type Id is required' });
+    let { event_type_id, name, description, value } = req.body || {};
+    if (!name || !event_type_id || isNaN(value) || !value) {
+        return res.status(401).json({ success: false, message: 'fill all fields correctly!' });
     }
     if (await checkCardTypeExists(name, parseInt(event_type_id))) {
         return res.status(409).json({ message: "Card Type already exists for this Event Type!" })
