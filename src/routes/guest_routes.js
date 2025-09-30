@@ -44,14 +44,15 @@ router.post("/", requireAuth, async (req, res) => {
 })
 
 router.post("/check-in", requireAuth, async (req, res) => {
-    const { access_code } = req.body || {};
-    if (!access_code) {
+    const { access_code, event_id } = req.body || {};
+    if (!access_code || !event_id) {
         return res.status(422).json({
             success: false,
-            message: "Please provide an access code"
+            message: "Please provide an access code and event id"
         })
     }
-    let check = await checkInGuest(access_code);
+    console.log("Access Code:", event_id);
+    let check = await checkInGuest(access_code, event_id);
     if (check.success !== true) {
         return res.status(401).json(check);
     }

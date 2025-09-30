@@ -88,19 +88,33 @@ export const deleteGuest = async (id) => {
     }
 }
 
-export const checkInGuest = async (access_code) => {
+export const checkInGuest = async (access_code, event_id) => {
     try {
-        let check = await prisma.event_guests.findFirst({ where: { access_code: access_code, is_checked: false }, include: { card_type: { select: { name: true, value: true } } } })
-        // if (check) {
-        //     check = await prisma.event_guests.update({
-        //         where: { access_code: access_code },
-        //         data: { is_checked: (check.checkin_count > check.card_type.value), checkin_count: { increment: 1 } },
-        //     });
-        // } else {
-        //     return { success: false, message: "Access code not found" }
-        // }
-        // const checkedInGuest = check;
-        return { success: true, data: check.checkin_count };
+        let guest = await prisma.event_guests.findFirst({
+            where: { access_code: access_code, is_checked: false, event_id: Number(event_id) },
+            include: { card_type: { select: { name: true, value: true } } }
+        })
+        if (!guest) {
+            return { success: false, message: "Access code not found or already checked in fully" };
+        }
+
+        // Check if guest can still check in
+        if (guest.checkin_count < guest.card_type.value) {
+            guest = await prisma.event_guests.update({
+                where: { id: guest.id }, 
+                data: {
+                    checkin_count: { increment: 1 },
+                    is_checked: guest.checkin_count + 1 >= guest.card_type.value, // mark true if this is the last allowed scan
+                },
+                include: {
+                    card_type: { select: { name: true, value: true } }
+                }
+            });
+
+            return { success: true, data: guest };
+        } else {
+            return { success: false, message: "This card has reached its maximum scans" };
+        }
     } catch (err) {
         console.log("Error in checking in guest", err);
         return { success: false, message: "Something went wrong", data: err.message };
