@@ -32,6 +32,6 @@ BigInt.prototype.toJSON = function () {
 
 app.listen(PORT, () => {
     // console.log(`🚀 Server running at http://localhost:${PORT}`);
-    console.log(`🚀 Server running at http://192.168.100.161:${PORT}`);
+    console.log(`🚀 Server running at http://192.168.1.158:${PORT}`);
 });
 
