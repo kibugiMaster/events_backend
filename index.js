@@ -3,7 +3,7 @@ import mainRoutes from "./src/routes/main_routes.js";
 import cors from "cors";
 
 const app = express();
-const PORT = 3001;
+const PORT = 4001;
 
 // Middleware to parse JSON
 app.use(express.json());
@@ -31,7 +31,7 @@ BigInt.prototype.toJSON = function () {
 };
 
 app.listen(PORT, () => {
-    // console.log(`🚀 Server running at http://localhost:${PORT}`);
-    console.log(`🚀 Server running at http://192.168.1.158:${PORT}`);
+    console.log(`🚀 Server running at http://localhost:${PORT}`);
+    // console.log(`🚀 Server running at http://192.168.1.158:${PORT}`);
 });
 
