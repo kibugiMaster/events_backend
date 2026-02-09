@@ -51,7 +51,7 @@ router.post('/login', async (req, res) => {
         maxAge: refreshExpiresMs(),
         path: '/api/auth/refresh',
     });
-    return res.json({ success: true, message: "User created successfully.", data: user.data, token: tokens.accessToken });
+    return res.json({ success: true, message: "User login successfully.", data: user.data, token: tokens.accessToken });
 });
 
 router.get('/profile', requireAuth, async (req, res) => {

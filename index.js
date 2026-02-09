@@ -12,6 +12,13 @@ app.use(cors()); // allow all origins
 // OR restrict
 // app.use(cors({ origin: "http://localhost:8080" }));
 
+// ============================================================================
+// LOGGING + ROUTES + ERROR HANDLERS
+// ============================================================================
+app.use((req, res, next) => {
+    console.log(`📝 ${req.method} ${req.path} - ${new Date().toISOString()}`);
+    next();
+});
 
 // Routes
 app.get("/", (req, res) => {
