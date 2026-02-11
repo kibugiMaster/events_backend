@@ -26,10 +26,10 @@ router.get("/:id", requireAuth, async (req, res) => {
 });
 
 router.post("/", requireAuth, async (req, res) => {
-    let { title, description, event_type_id, event_date, event_time, event_location, map_link, } = req.body || {};
+    let { title, description, event_type_id, event_date, event_time, event_location, map_link, background_image } = req.body || {};
     let user_id = req.user.userId;
 
-    if (!title || !event_type_id || !event_date || !event_time || !event_location) {
+    if (!title || !event_type_id || !event_date || !event_time || !event_location || !background_image) {
         return res.status(400).json({ success: false, message: "Please fill all the fields!" })
     }
     let access_code = generateRandomCode(6)
@@ -42,10 +42,12 @@ router.post("/", requireAuth, async (req, res) => {
         event_time,
         event_location,
         map_link,
+        background_image,
         access_code
+
     }
     let events = await createEvent(body);
-    return res.status(200).json({ succuss: true, message: "Created successfully!", data: events.data });
+    return res.status(200).json({ success: true, message: "Created successfully!", data: events.data });
 });
 
 export default router;

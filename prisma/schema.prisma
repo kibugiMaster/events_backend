@@ -65,6 +65,7 @@ model events {
   valid_status  Boolean   @default(true)
   payment_status Boolean  @default(false)
   access_code     String?  @unique 
+  background_image  String?
   created_at    DateTime  @default(now())
   updated_at    DateTime  @updatedAt
 

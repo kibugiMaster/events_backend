@@ -1,10 +1,15 @@
 import prisma from "../config/prisma_config.js";
 
 
-export const getAllGuests = async (eventId) => {
+export const getAllGuests = async (eventId, search) => {
     try {
         let guests = await prisma.event_guests.findMany({
-            where: { event_id: Number(eventId) },
+            where: {
+                event_id: Number(eventId),
+                ...(search && { full_name: { contains: search, mode: "insensitive" } }),
+                ...(search && { email: { contains: search, mode: "insensitive" } }),
+                ...(search && { phone: { contains: search, mode: "insensitive" } }),
+            },
             include: {
                 card_type: { select: { name: true } },
             }
@@ -101,7 +106,7 @@ export const checkInGuest = async (access_code, event_id) => {
         // Check if guest can still check in
         if (guest.checkin_count < guest.card_type.value) {
             guest = await prisma.event_guests.update({
-                where: { id: guest.id }, 
+                where: { id: guest.id },
                 data: {
                     checkin_count: { increment: 1 },
                     is_checked: guest.checkin_count + 1 >= guest.card_type.value, // mark true if this is the last allowed scan

@@ -7,7 +7,8 @@ const router = new Router();
 
 router.get("/:eventId", requireAuth, async (req, res) => {
     const { eventId } = req.params;
-    let guest = await getAllGuests(eventId);
+    const { search } = req.query || {};
+    let guest = await getAllGuests(eventId, search);
     if (guest.success !== true) {
         return res.status(401).json(guest);
     }
