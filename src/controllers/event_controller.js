@@ -5,6 +5,7 @@ export const getAllEvents = async (user_id) => {
     try {
         const events = await prisma.events.findMany({
             where: { user_id: user_id }, include: {
+                user: { select: { full_name: true, email: true, phone: true } },
                 _count: {
                     select: {
                         event_guests: true,
