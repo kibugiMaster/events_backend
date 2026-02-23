@@ -56,12 +56,12 @@ router.post('/card', requireAuth, async (req, res) => {
         return res.status(409).json({ message: "Card Type already exists for this Event Type!" })
     }
 
-    let body = { event_type_id, name, description };
+    let body = { event_type_id, name, description, value };
     let card = await createEventCardTypes(body);
     if (card.success !== true) {
         return res.status(card.code).json({ message: card.message });
     }
-    return res.status(200).json({ success: true, message: 'Loaded successfully!', data: card.data });
+    return res.status(200).json({ success: true, message: 'Created successfully!', data: card.data });
 })
 
 export default router;
