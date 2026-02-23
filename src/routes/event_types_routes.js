@@ -52,11 +52,11 @@ router.post('/card', requireAuth, async (req, res) => {
     if (!name || !event_type_id || isNaN(value) || !value) {
         return res.status(401).json({ success: false, message: 'fill all fields correctly!' });
     }
-    if (await checkCardTypeExists(name, parseInt(event_type_id))) {
+    if (await checkCardTypeExists(name, String(event_type_id))) {
         return res.status(409).json({ message: "Card Type already exists for this Event Type!" })
     }
 
-    let body = { event_type_id, name, description, value };
+    let body = { event_type_id: String(event_type_id), name, description, value };
     let card = await createEventCardTypes(body);
     if (card.success !== true) {
         return res.status(card.code).json({ message: card.message });
