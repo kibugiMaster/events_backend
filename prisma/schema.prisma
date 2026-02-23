@@ -14,7 +14,7 @@ datasource db {
 }
 
 model users {
-  id         Int      @id @default(autoincrement())
+  id         String           @id @default(cuid())
   full_name  String
   email      String   @unique
   phone      String   @unique
@@ -25,11 +25,12 @@ model users {
   // Relations
   events     events[]
   refresh_tokens       refresh_token[]
+  sms_sent    sms_sent[]
 }
 
 model refresh_token {
-  id          Int      @id @default(autoincrement())
-  user_id      Int
+  id              String           @id @default(cuid())
+  user_id      String
   token  String   @db.Text     
   expires_at  DateTime
   created_at  DateTime @default(now())
@@ -41,7 +42,7 @@ model refresh_token {
 }
 
 model event_types {
-  id          Int      @id @default(autoincrement()) // primary key
+  id              String           @id @default(cuid()) // primary key
   name        String   @unique
   description String?  // nullable field
   logo        String?
@@ -53,9 +54,9 @@ model event_types {
 }
 
 model events {
-  id            Int       @id @default(autoincrement())
-  user_id       Int
-  event_type_id Int
+  id              String           @id @default(cuid())
+  user_id       String
+  event_type_id String
   title         String
   event_date    DateTime
   event_time    String
@@ -73,16 +74,17 @@ model events {
   user          users      @relation(fields: [user_id], references: [id])
   event_type     event_types @relation(fields: [event_type_id], references: [id])
   event_guests  event_guests[]
+  sms_sent    sms_sent[]
   event_gallery  event_gallery[]
 }
 
 model event_guests {
-  id           Int        @id @default(autoincrement())
+  id              String           @id @default(cuid())
   full_name    String
   phone        String
   email        String?
-  card_type_id Int
-  event_id     Int
+  card_type_id String
+  event_id     String
   access_code  String     @unique
   checkin_count Int    @default(0)
   is_checked    Boolean   @default(false)
@@ -95,8 +97,8 @@ model event_guests {
 }
 
 model event_gallery {
-  id          Int      @id @default(autoincrement())
-  event_id    Int
+  id              String           @id @default(cuid())
+  event_id    String
   media_url   String
   media_type  String
   uploaded_by String
@@ -111,8 +113,8 @@ model event_gallery {
 
 
 model card_types {
-  id            Int          @id @default(autoincrement())
-  event_type_id Int
+  id              String           @id @default(cuid())
+  event_type_id String
   name          String
   value         Int?
   description   String?      
@@ -124,9 +126,21 @@ model card_types {
   event_guests  event_guests[]
 }
 
+model sms_sent {
+  id              String           @id @default(cuid())
+  user_id         String
+  event_id        String
+  sms             String
+  created_at    DateTime     @default(now())
+  update_at     DateTime     @updatedAt
+
+  // relation to events
+  event   events @relation(fields: [event_id], references: [id])
+  user          users      @relation(fields: [user_id], references: [id])
+} 
 
 model faqs {
-  id         Int      @id @default(autoincrement())
+  id              String           @id @default(cuid())
   question   String
   answer     String   @db.Text
   created_at DateTime @default(now())
