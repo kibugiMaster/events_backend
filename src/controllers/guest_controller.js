@@ -5,7 +5,7 @@ export const getAllGuests = async (eventId, search) => {
     try {
         let guests = await prisma.event_guests.findMany({
             where: {
-                event_id: Number(eventId),
+                event_id: String(eventId),
                 ...(search && { full_name: { contains: search, mode: "insensitive" } }),
                 ...(search && { email: { contains: search, mode: "insensitive" } }),
                 ...(search && { phone: { contains: search, mode: "insensitive" } }),
@@ -28,7 +28,7 @@ export const getAllGuests = async (eventId, search) => {
 export const getGuestById = async (id) => {
     try {
         const guest = await prisma.event_guests.findUnique({
-            where: { id: Number(id) },
+            where: { id: String(id) },
             include: {
                 card_type: { select: { name: true } },
             }
@@ -55,7 +55,7 @@ export const addNewGuest = async (body) => {
 
 export const checkIfGuestExists = async (phone, eventId) => {
     try {
-        const existingGuest = await prisma.event_guests.findFirst({ where: { phone: phone, event_id: Number(eventId) } });
+        const existingGuest = await prisma.event_guests.findFirst({ where: { phone: phone, event_id: String(eventId) } });
         if (existingGuest) {
             return true;
         }
@@ -71,7 +71,7 @@ export const checkIfGuestExists = async (phone, eventId) => {
 export const updateGuestDetails = async (id, body) => {
     try {
         const updatedGuest = await prisma.event_guests.update({
-            where: { id: Number(id) },
+            where: { id: String(id) },
             data: body,
         });
         return { success: true, data: updatedGuest };
@@ -84,7 +84,7 @@ export const updateGuestDetails = async (id, body) => {
 export const deleteGuest = async (id) => {
     try {
         const deletedGuest = await prisma.event_guests.delete({
-            where: { id: Number(id) },
+            where: { id: String(id) },
         });
         return { success: true, data: deletedGuest };
     } catch (err) {
@@ -96,7 +96,7 @@ export const deleteGuest = async (id) => {
 export const checkInGuest = async (access_code, event_id) => {
     try {
         let guest = await prisma.event_guests.findFirst({
-            where: { access_code: access_code, is_checked: false, event_id: Number(event_id) },
+            where: { access_code: access_code, is_checked: false, event_id: String(event_id) },
             include: { card_type: { select: { name: true, value: true } } }
         })
         if (!guest) {
