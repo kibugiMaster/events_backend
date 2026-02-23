@@ -18,11 +18,11 @@ export const sendWhatsappMessage = async () => {
 
 export async function sendImage(req, res) {
     try {
-        const api_key = "cab709175a00398167597df6df5efc1ba5063bd785b32d3b65d50dca9d3ce43b"
+        const api_key = process.env.WHATSAPP_API_KEY;
 
         const config = {
             method: 'POST',
-            url: 'https://www.wasenderapi.com/api/send-message',
+            url: process.env.WHATSAPP_API_URL,
             headers: {
                 'Authorization': `Bearer ${api_key}`,
                 'Content-Type': 'application/json'
