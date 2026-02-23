@@ -3,33 +3,6 @@ import https from "https";
 import { normalizePhoneNumber } from '../utils/helper.js';
 
 export const sendWhatsappMessage = async () => {
-    // const accountSid = 'AC6cd6a07b27e2e5bc03611168851a7f40';
-    // const authToken = 'cea367acd6d9c25188c8528d9e69f8c6';
-    // const client = require('twilio')(accountSid, authToken);
-
-    // client.messages
-    //     .create({
-    //         from: 'whatsapp:+14155238886',
-    //         contentSid: 'HX350d429d32e64a552466cafecbe95f3c',
-    //         contentVariables: '{"1":"12/1","2":"3pm"}',
-    //         to: 'whatsapp:+255626506214'
-    //     })
-    //     .then(message => console.log(message.sid))
-    //     .done();
-
-    // const accountSid = 'AC6cd6a07b27e2e5bc03611168851a7f40';
-    // const authToken = '[AuthToken]';
-    // const client = require('twilio')(accountSid, authToken);
-
-    // client.messages
-    //     .create({
-    //         body: 'Your appointment is coming up on July 21 at 3PM nice',
-    //         from: 'whatsapp:+14155238886',
-    //         to: 'whatsapp:+255626506214'
-    //     })
-    //     .then(message => console.log(message.sid))
-    //     .done();
-
     const url = "https://www.wasenderapi.com/api/send-message";
     const api_key = "cab709175a00398167597df6df5efc1ba5063bd785b32d3b65d50dca9d3ce43b"
     const body = {
@@ -41,32 +14,6 @@ export const sendWhatsappMessage = async () => {
         Content_Type: "application/json",
     };
 }
-
-// 201 - CREATED - The request was successful.We created a new resource and the response body contains the representation.
-// {
-//     "account_sid": "AC6cd6a07b27e2e5bc03611168851a7f40",
-//         "api_version": "2010-04-01",
-//             "body": "Your appointment is coming up on 12/1 at 3pm",
-//                 "date_created": "Mon, 16 Feb 2026 12:48:12 +0000",
-//                     "date_sent": null,
-//                         "date_updated": "Mon, 16 Feb 2026 12:48:12 +0000",
-//                             "direction": "outbound-api",
-//                                 "error_code": null,
-//                                     "error_message": null,
-//                                         "from": "whatsapp:+14155238886",
-//                                             "messaging_service_sid": null,
-//                                                 "num_media": "0",
-//                                                     "num_segments": "1",
-//                                                         "price": null,
-//                                                             "price_unit": null,
-//                                                                 "sid": "MM99973bf4cc6a716fe4c4f220069318c6",
-//                                                                     "status": "queued",
-//                                                                         "subresource_uris": {
-//         "media": "/2010-04-01/Accounts/AC6cd6a07b27e2e5bc03611168851a7f40/Messages/MM99973bf4cc6a716fe4c4f220069318c6/Media.json"
-//     },
-//     "to": "whatsapp:+255626506214",
-//         "uri": "/2010-04-01/Accounts/AC6cd6a07b27e2e5bc03611168851a7f40/Messages/MM99973bf4cc6a716fe4c4f220069318c6.json"
-// }
 
 
 export async function sendImage(req, res) {
