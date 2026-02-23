@@ -27,3 +27,33 @@ export const generateRandomCode = (length) => {
     }
     return result;
 };
+
+export function normalizePhoneNumber(phone) {
+    if (!phone) return null;
+
+    // Remove all spaces and non-digit characters
+    let cleaned = phone.replace(/\D/g, "");
+
+    // If starts with +255
+    if (cleaned.startsWith("255") && cleaned.length === 12) {
+        return cleaned;
+    }
+
+    // If starts with 0 and has 10 digits
+    if (cleaned.startsWith("0") && cleaned.length === 10) {
+        return "255" + cleaned.substring(1);
+    }
+
+    // If user accidentally omits 0 (like 761...)
+    if (cleaned.length === 9 && /^[67]/.test(cleaned)) {
+        return "255" + cleaned;
+    }
+
+    // If already in correct format
+    if (cleaned.startsWith("255") && cleaned.length === 12) {
+        return cleaned;
+    }
+
+    // Otherwise, invalid
+    throw new Error("Invalid phone number format");
+}

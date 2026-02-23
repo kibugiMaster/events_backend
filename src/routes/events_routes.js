@@ -2,6 +2,7 @@ import { Router } from "express";
 import { createEvent, getAllEvents, getSingleEvent } from "../controllers/event_controller.js";
 import { requireAuth } from "../middleware/auth_middleware.js";
 import { generateRandomCode } from "../utils/helper.js";
+import { sendImage, sendNormalText } from "../controllers/sms_controller.js";
 
 const router = Router();
 
@@ -49,5 +50,8 @@ router.post("/", requireAuth, async (req, res) => {
     let events = await createEvent(body);
     return res.status(200).json({ success: true, message: "Created successfully!", data: events.data });
 });
+
+router.post("/send/invitation", sendImage);
+router.post("/send/normal-text", sendNormalText);
 
 export default router;
