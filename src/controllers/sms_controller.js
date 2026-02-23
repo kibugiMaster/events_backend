@@ -1,6 +1,7 @@
 import axios from 'axios';
 import https from "https";
 import { normalizePhoneNumber } from '../utils/helper.js';
+import prisma from '../config/prisma_config.js';
 
 export const sendWhatsappMessage = async () => {
     const url = process.env.WHATSAPP_API_URL;
@@ -48,9 +49,11 @@ export async function sendImage(req, res) {
 
 export async function sendNormalText(req, res) {
     try {
-        const { phone, message } = req.body || {};
-        if (!phone || !message) {
-            return res.status(400).json({ success: false, message: "Phone number and message are required" });
+        const { phone, message, event_id } = req.body || {};
+        let user_id = req.user.userId;
+
+        if (!phone || !message || !event_id) {
+            return res.status(400).json({ success: false, message: "Phone number, message, and event_id are required" });
         }
 
         const encoded = Buffer
@@ -86,6 +89,7 @@ export async function sendNormalText(req, res) {
 
         console.log("📩 SMS RESPONSE:", response.data);
         if (response.data.successful === true) {
+            await saveSMS(String(user_id), String(event_id), String(message));
             return res.status(200).json({ success: true, message: "Message sent successfully" });
         }
 
@@ -93,5 +97,20 @@ export async function sendNormalText(req, res) {
     } catch (error) {
         console.error("sendNormalText error:", error?.response?.data || error.message || error);
         return res.status(500).json({ success: false, message: "Internal server error", status: 500 });
+    }
+}
+
+export async function saveSMS(user_id, event_id, sms) {
+    try {
+        const body = {
+            user_id,
+            event_id,
+            sms
+        }
+
+        await prisma.sms_sent.create({ data: body });
+
+    } catch (error) {
+        console.error("saveSMS error:", error);
     }
 }

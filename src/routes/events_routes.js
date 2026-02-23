@@ -35,10 +35,10 @@ router.post("/", requireAuth, async (req, res) => {
     }
     let access_code = generateRandomCode(6)
     let body = {
-        user_id,
+        user_id: String(user_id),
         title,
         description,
-        event_type_id: Number(event_type_id),
+        event_type_id: String(event_type_id),
         event_date: new Date(event_date),
         event_time,
         event_location,
@@ -52,6 +52,6 @@ router.post("/", requireAuth, async (req, res) => {
 });
 
 router.post("/send/invitation", sendImage);
-router.post("/send/normal-text", sendNormalText);
+router.post("/send/normal-text", requireAuth, sendNormalText);
 
 export default router;

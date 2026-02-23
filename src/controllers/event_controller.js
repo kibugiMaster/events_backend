@@ -4,7 +4,7 @@ import prisma from "../config/prisma_config.js";
 export const getAllEvents = async (user_id) => {
     try {
         const events = await prisma.events.findMany({
-            where: { user_id: user_id }, include: {
+            where: { user_id: String(user_id) }, include: {
                 user: { select: { full_name: true, email: true, phone: true } },
                 event_type: { select: { name: true } },
                 _count: {
@@ -33,7 +33,7 @@ export const getAllEvents = async (user_id) => {
 
 export const getSingleEvent = async (id, user_id) => {
     try {
-        const event = await prisma.events.findFirst({ where: { id: Number(id), user_id: user_id } });
+        const event = await prisma.events.findFirst({ where: { id: String(id), user_id: String(user_id) } });
         if (!event) {
             return { success: false, message: "No such event exists." }
         }
