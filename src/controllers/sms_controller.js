@@ -3,8 +3,8 @@ import https from "https";
 import { normalizePhoneNumber } from '../utils/helper.js';
 
 export const sendWhatsappMessage = async () => {
-    const url = "https://www.wasenderapi.com/api/send-message";
-    const api_key = "cab709175a00398167597df6df5efc1ba5063bd785b32d3b65d50dca9d3ce43b"
+    const url = process.env.WHATSAPP_API_URL;
+    const api_key = process.env.WHATSAPP_API_KEY;
     const body = {
         "to": "255626506214",
         "text": "Hello from WasenderAPI!"
