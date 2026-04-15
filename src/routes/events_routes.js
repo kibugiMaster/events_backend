@@ -2,7 +2,7 @@ import { Router } from "express";
 import { createEvent, getAllEvents, getSingleEvent } from "../controllers/event_controller.js";
 import { requireAuth } from "../middleware/auth_middleware.js";
 import { generateRandomCode } from "../utils/helper.js";
-import { sendImage, sendNormalText } from "../controllers/sms_controller.js";
+import { getSentSMS, sendImage, sendNormalText } from "../controllers/sms_controller.js";
 
 const router = Router();
 
@@ -51,6 +51,8 @@ router.post("/", requireAuth, async (req, res) => {
     return res.status(200).json({ success: true, message: "Created successfully!", data: events.data });
 });
 
+// Additional routes for sending messages
+router.get("/sms/sent/:event_id", requireAuth, getSentSMS);
 router.post("/send/invitation", sendImage);
 router.post("/send/normal-text", requireAuth, sendNormalText);
 

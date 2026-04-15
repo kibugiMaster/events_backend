@@ -135,3 +135,26 @@ export async function saveSMS(user_id, event_id, sms) {
         console.error("saveSMS error:", error);
     }
 }
+
+export async function getSentSMS(req, res) {
+    try {
+        let user_id = req.user.userId;
+        const { event_id } = req.params || {};
+        const sentSMS = await prisma.sms_sent.findMany({
+            where: { event_id: String(event_id) },
+            include: {
+                event: { select: { title: true } }
+            }
+        });
+        let response = sentSMS.map(sms => ({
+            id: sms.id,
+            message: sms.sms,
+            event_title: sms.event.title,
+            sent_at: sms.created_at
+        }))
+        return res.status(200).json({ success: true, data: response });
+    } catch (error) {
+        console.error("getSentSMS error:", error);
+        return res.status(500).json({ success: false, message: "Internal server error", status: 500 });
+    }
+}
