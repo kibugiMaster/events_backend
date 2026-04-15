@@ -49,35 +49,62 @@ export async function sendImage(req, res) {
 
 export async function sendNormalText(req, res) {
     try {
-        const { phone, message, event_id } = req.body || {};
+        const { message, event_id } = req.body || {};
         let user_id = req.user.userId;
 
-        if (!phone || !message || !event_id) {
-            return res.status(400).json({ success: false, message: "Phone number, message, and event_id are required" });
+        if (!message || !event_id) {
+            return res.status(400).json({ success: false, message: "Message and event_id are required" });
         }
 
+        const guest = await prisma.event_guests.findFirst({
+            where: {
+                event_id: String(event_id)
+            }
+        });
+
+        if (!guest) {
+            return res.status(404).json({ success: false, message: "No guest found for this event" });
+        }
+        const response = await sendSMS([guest.phone], message);
+
+        if (response.successful === true) {
+            await saveSMS(String(user_id), String(event_id), String(message));
+            return res.status(200).json({ success: true, message: "Message sent successfully" });
+        }
+
+        return res.status(400).json({ success: false, message: "Failed to send message", details: response.data });
+    } catch (error) {
+        console.error("sendNormalText error:", error?.response?.data || error.message || error);
+        return res.status(500).json({ success: false, message: "Internal server error", status: 500 });
+    }
+}
+
+export async function sendSMS(phones, message) {
+    try {
         const encoded = Buffer
             .from(`${process.env.BEEM_API_KEY}:${process.env.BEEM_API_SECRET}`)
             .toString("base64");
 
         const url = "https://apisms.beem.africa/v1/send";
+        const headers = {
+            "Content-Type": "application/json",
+            Authorization: `Basic ${encoded}`,
+        };
+
+
+        const recipients = await Promise.all(
+            phones.map(async (phone, index) => ({
+                recipient_id: index + 1,
+                dest_addr: await normalizePhoneNumber(phone),
+            }))
+        );
 
         const payload = {
             source_addr: "UZASASA",
             schedule_time: "",
             encoding: 0,
             message: message,
-            recipients: [
-                {
-                    recipient_id: 1,
-                    dest_addr: await normalizePhoneNumber(phone),
-                },
-            ],
-        };
-
-        const headers = {
-            "Content-Type": "application/json",
-            Authorization: `Basic ${encoded}`,
+            recipients: recipients,
         };
 
         const response = await axios.post(url, payload, {
@@ -88,15 +115,9 @@ export async function sendNormalText(req, res) {
         });
 
         console.log("📩 SMS RESPONSE:", response.data);
-        if (response.data.successful === true) {
-            await saveSMS(String(user_id), String(event_id), String(message));
-            return res.status(200).json({ success: true, message: "Message sent successfully" });
-        }
-
-        return res.status(400).json({ success: false, message: "Failed to send message", details: response.data });
+        return response.data;
     } catch (error) {
-        console.error("sendNormalText error:", error?.response?.data || error.message || error);
-        return res.status(500).json({ success: false, message: "Internal server error", status: 500 });
+        console.error("sendSMS error:", error);
     }
 }
 

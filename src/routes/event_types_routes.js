@@ -13,7 +13,7 @@ router.get('/', async (req, res) => {
 });
 
 router.get('/:id', async (req, res) => {
-    let id = parseInt(req.params.id);
+    let id = String(req.params.id);
     let type = await getEventTypeById(id)
     if (type.success !== true) {
         return res.status(type.code).json({ message: type.message });
@@ -39,7 +39,7 @@ router.post('/', requireAuth, async (req, res) => {
 });
 
 router.get('/card/:id', async (req, res) => {
-    let id = parseInt(req.params.id);
+    let id = String(req.params.id);
     let card = await getEventCardTypes(id);
     if (card.success !== true) {
         return res.status(card.code).json({ message: card.message });
