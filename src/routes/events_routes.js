@@ -52,7 +52,7 @@ router.post("/", requireAuth, async (req, res) => {
 });
 
 // Additional routes for sending messages
-router.get("/sms/sent/:event_id", requireAuth, getSentSMS);
+router.get("/sent-sms/:event_id", requireAuth, getSentSMS);
 router.post("/send/invitation", sendImage);
 router.post("/send/normal-text", requireAuth, sendNormalText);
 
